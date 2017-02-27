@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<htmll>
+<head>
+   <meta charset="utf-8" />
+   <style>
+    input[type=text], select {
+       width: 40%;
+       padding: 12px 20px;
+       margin: 8px 40px;
+       display: inline-block;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       box-sizing: border-box;
+   }
+
+   input[type=button] {
+       width: 10%;
+       background-color: #4DB6AC;
+       color: white;
+       padding: 14px 20px;
+       margin: 8px 0;
+       border: none;
+       border-radius: 4px;
+       cursor: pointer;
+   }
+
+   h1{
+    text-align: center;
+    text-transform: uppercase;
+    color: #4DB6AC;
+  }
+
+  p{
+    text-indent: 40px;
+    text-align: justify;
+    letter-spacing: 3px;
+  }
+
+  a{
+    text-decoration:none;
+    color: #4DB6AC;
+  }
+  body{
+    background-color: #DFE2DB;
+  }
+   </style>
+</head>
+<body>
+   <h1>Sample Chat using WebSocket</h1>
+
+   <input type="text" id="inp" placeholder="Type your message here :)"/>
+   <input type="button" id="send" value="Send" />
+   <div id="out"></div>
+
+   <script language="javascript" type="text/javascript">
+      var wsURI = "ws://{{.}}/socket";
+      var out;
+      var inp;
+      var send;
+
+      function init() {
+        output = document.getElementById("out");
+        input = document.getElementById("inp");
+        send = document.getElementById("send");
+        send.onclick = sendClickHandler;
+        myWebSocket();
+      }
+
+      function sendClickHandler() {
+        doSend(input.value);
+        input.value = '';
+      }
+
+      function myWebSocket() {
+        websocket = new WebSocket(wsURI);
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
+      }
+
+      function onOpen(evt) {
+        writeToScreen("Connected :)");
+      }
+
+      function onClose(evt) {
+        writeToScreen("Disconnected :(");
+      }
+
+      function onMessage(evt) {
+        writeToScreen('<span style="color: gray;">Response: ' + evt.data+'</span>');
+      }
+
+      function onError(evt) {
+        writeToScreen('<span style="color: red;">Error:</span> ' + evt.data);
+      }
+
+      function doSend(message) {
+        writeToScreen("Sent: " + message);
+        websocket.send(message);
+      }
+
+      function writeToScreen(message) {
+        var pre = document.createElement("p");
+        pre.style.wordWrap = "break-word";
+        pre.innerHTML = message;
+        output.appendChild(pre);
+      }
+
+      window.addEventListener("load", init, false);
+   </script>
+</body>
+</html>
