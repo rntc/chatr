@@ -19,6 +19,7 @@ type socket struct {
 	done chan bool
 }
 
+//RootHandler it's the first page in the webapp
 func RootHandler(w http.ResponseWriter, r *http.Request) {
 	tpl.Execute(w, "localhost:8080")
 }
